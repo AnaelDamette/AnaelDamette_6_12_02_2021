@@ -2,11 +2,29 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user.js');
 const jwt = require('jsonwebtoken');
 
+var crypto = require('crypto'),
+    algorithm = 'aes-256-ctr',
+    password = 'aes-256-ctr';
+
+function encrypt(text){
+  var cipher = crypto.createCipher(algorithm,password)
+  var crypted = cipher.update(text,'utf8','hex')
+  crypted += cipher.final('hex');
+  return crypted;
+}
+ 
+function decrypt(text){
+  var decipher = crypto.createDecipher(algorithm,password)
+  var dec = decipher.update(text,'hex','utf8')
+  dec += decipher.final('utf8');
+  return dec;
+}
+
 exports.signup = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then(hash => {
       let user = new User({
-        email: req.body.email,
+        email: encrypt(req.body.email),
         password: hash
       });
       user.save()
@@ -16,7 +34,7 @@ exports.signup = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 exports.login = (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  User.findOne({ email: encrypt(req.body.email) })
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !' });
