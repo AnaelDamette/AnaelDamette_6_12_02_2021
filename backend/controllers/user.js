@@ -12,13 +12,6 @@ function encrypt(text){
   crypted += cipher.final('hex');
   return crypted;
 }
- 
-function decrypt(text){
-  var decipher = crypto.createDecipher(algorithm,password)
-  var dec = decipher.update(text,'hex','utf8')
-  dec += decipher.final('utf8');
-  return dec;
-}
 
 exports.signup = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
