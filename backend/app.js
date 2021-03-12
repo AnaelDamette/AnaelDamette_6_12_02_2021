@@ -7,6 +7,12 @@ const userRoutes = require('./routes/user.js');
 const path = require('path');
 const app = express();
 const db = require('dotenv');
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+});
 
 
 mongoose.connect(process.env.DB_URI)
@@ -31,6 +37,8 @@ app.use((req, res, next) => {
 });
 
 app.use(bodyParser.json());
+app.use("/api/", apiLimiter);
+app.use(helmet());
 
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
