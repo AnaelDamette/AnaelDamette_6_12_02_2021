@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -5,13 +6,17 @@ const sauceRoutes = require('./routes/sauces.js');
 const userRoutes = require('./routes/user.js');
 const path = require('path');
 const app = express();
+const db = require('dotenv');
 
 
-mongoose.connect('mongodb+srv://Net:pourquoi@testbasededonne.ercrp.mongodb.net/test?retryWrites=true&w=majority',
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
+mongoose.connect(process.env.DB_URI)
+
+
+// mongoose.connect('mongodb+srv://Net:pourquoi@testbasededonne.ercrp.mongodb.net/test?retryWrites=true&w=majority',
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+//   })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch((error) => {
     console.log('Connexion à MongoDB échouée !');
